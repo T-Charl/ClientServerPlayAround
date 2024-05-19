@@ -1,11 +1,21 @@
 //package co.za.javaPlayground;
 //
-//import java.net.*;
-//import java.io.*;
+//import java.io.IOException;
+//import java.net.ServerSocket;
+//import java.net.Socket;
 //
-//class Main {
-//    public static void main(String[] args) throws IOException {
-//        server server = new server(1234);
-//        server.start(); // Start the server on port 1234
+//public class Main {
+//    public static void main(String[] args) {
+//        try (ServerSocket serverSocket = new ServerSocket(SimpleServer.PORT)) {
+//            System.out.println("Server started on port " + SimpleServer.PORT);
+//            while (true) {
+//                Socket clientSocket = serverSocket.accept();
+//                System.out.println("Server in while loop");
+//                SimpleServer server = new SimpleServer(clientSocket);
+//                new Thread(server).start();
+//            }
+//        } catch (IOException ex) {
+//            ex.printStackTrace();
+//        }
 //    }
 //}

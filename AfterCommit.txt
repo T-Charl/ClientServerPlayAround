@@ -1,0 +1,16 @@
+This file serves as to keep track of the changes that need to be implemented into the program after a push.
+
+Friday 31-May-2024
+- clients quiting other clients' robots by name
+- confirm if the client wants to quit before removing them from the server
+- implement world configurations
+- implement dump command
+- implement look command
+- implement state command
+- implement basic command functionality
+- generate obstacles and display them in a user-friendly format
+- implement direction and tracking
+- implement launch command with arguments for the bullets and shields
+- implement fire command
+- implement repair command
+- implement the protocol to allow for smooth comms between server and client

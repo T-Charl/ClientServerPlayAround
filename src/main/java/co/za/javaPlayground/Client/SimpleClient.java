@@ -1,102 +1,47 @@
-//package co.za.javaPlayground.Client;
-//
-//import java.io.*;
-//import java.net.*;
-//import java.util.Scanner;
-//
-//public class SimpleClient {
-//    public static void main(String[] args) {
-//        try (Socket socket = new Socket("localhost", 5000);
-//             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-//             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-//             Scanner scanner = new Scanner(System.in)) {
-//
-//            System.out.println("Connected to the server. What would you like to do next?");
-//            String userInput;
-//            Thread readThread = new Thread(() -> {
-//                try {
-//                    String serverResponse;
-//                    while ((serverResponse = in.readLine()) != null) {
-//                        System.out.println(serverResponse);
-//                    }
-//                } catch (IOException e) {
-//                    System.out.println("Disconnected from server.");
-//                }
-//            });
-//            readThread.start();
-//
-//            while (true) {
-//                System.out.print("> ");
-//                userInput = scanner.nextLine();
-//                out.println(userInput);
-//                if (userInput.startsWith("quit")) {
-//                    break;
-//                }
-//            }
-//
-//            socket.close(); // Ensure the socket is closed properly
-//            readThread.join(); // Wait for the read thread to finish
-//
-//        } catch (IOException | InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//    }
-//}
-
 package co.za.javaPlayground.Client;
 
-//client that reads ip and port addresses from server properties file
+import Utilities.CommandParser;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
-import Utilities.ClientConfig;
-
-import java.io.*;
-import java.net.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
+import java.net.Socket;
 import java.util.Scanner;
-
 
 public class SimpleClient {
     public static void main(String[] args) {
-        String ipAddress = "127.0.0.1"; // Default to localhost
-        int port = 1234; // Default port
+        try (Socket socket = new Socket("localhost", 1234);
+             PrintStream out = new PrintStream(socket.getOutputStream());
+             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
 
-        try {
-            ClientConfig config = new ClientConfig("server.properties");
-            ipAddress = config.getProperty("server.ip");
-            port = Integer.parseInt(config.getProperty("server.port"));
-        } catch (IOException | NumberFormatException e) {
-            System.err.println("Error reading config file, using defaults: " + e.getMessage());
-        }
-
-        try (
-                Socket socket = new Socket(ipAddress, port);
-                PrintStream out = new PrintStream(socket.getOutputStream());
-                BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                Scanner scanner = new Scanner(System.in)
-        ) {
+            Scanner scanner = new Scanner(System.in);
             System.out.println("Connected to server. Type 'quit' to exit.");
-            String userInput;
-
-            Thread listenerThread = new Thread(() -> {
-                try {
-                    String response;
-                    while ((response = in.readLine()) != null) {
-                        System.out.println("Server: " + response);
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            });
-            listenerThread.start();
 
             while (true) {
                 System.out.print("Enter command: ");
-                userInput = scanner.nextLine();
+                String userInput = scanner.nextLine();
+                JsonObject request;
 
-                out.println(userInput);
-                out.flush();
+                try {
+                    request = CommandParser.parseCommand(userInput);
+                    out.println(request.toString());
+                    out.flush();
 
-                if (userInput.equalsIgnoreCase("quit")) {
-                    break;
+                    String serverResponse = in.readLine();
+                    if (serverResponse != null) {
+                        JsonObject response = JsonParser.parseString(serverResponse).getAsJsonObject();
+                        System.out.println("Server: " + response.get("message").getAsString());
+                    }
+
+                    if (userInput.startsWith("quit")) {
+                        break;
+                    }
+                } catch (Exception e) {
+                    System.out.println("Error: " + e.getMessage());
                 }
             }
         } catch (IOException e) {
@@ -104,3 +49,5 @@ public class SimpleClient {
         }
     }
 }
+
+

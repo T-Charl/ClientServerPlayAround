@@ -5,14 +5,13 @@ import java.io.InputStream;
 import java.util.Properties;
 
 public class ServerConfig {
-
     private Properties properties;
 
-    public ServerConfig(String configFileName) throws IOException {
+    public ServerConfig(String configFile) throws IOException {
         properties = new Properties();
-        try (InputStream input = getClass().getClassLoader().getResourceAsStream(configFileName)) {
+        try (InputStream input = getClass().getClassLoader().getResourceAsStream(configFile)) {
             if (input == null) {
-                throw new IOException("Unable to find " + configFileName);
+                throw new IOException("Unable to find " + configFile);
             }
             properties.load(input);
         }
@@ -21,4 +20,9 @@ public class ServerConfig {
     public String getProperty(String key) {
         return properties.getProperty(key);
     }
+
+    public int getIntProperty(String key) {
+        return Integer.parseInt(properties.getProperty(key));
+    }
 }
+

@@ -27,14 +27,15 @@ public class SimpleClient {
                 JsonObject request;
 
                 try {
-                    request = CommandParser.parseCommand(userInput);
-                    out.println(request.toString());
-                    out.flush();
+//                    request = CommandParser.parseCommand(userInput);
+                    out.println(userInput);
+//                    out.flush();
 
                     String serverResponse = in.readLine();
                     if (serverResponse != null) {
                         JsonObject response = JsonParser.parseString(serverResponse).getAsJsonObject();
-                        System.out.println("Server: " + response.get("message").getAsString());
+                        System.out.println(response);
+//                        System.out.println("Server: " + response.get("message").getAsString());
                     }
 
                     if (userInput.startsWith("quit")) {

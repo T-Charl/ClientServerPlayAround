@@ -21,7 +21,6 @@ public class CommandParser {
                 launchArgs.add(parts[2]); // Type
                 request.add("arguments", launchArgs);
                 System.out.println("Tester!!Tester   " + request.toString());
-
                 break;
 
             case "move":

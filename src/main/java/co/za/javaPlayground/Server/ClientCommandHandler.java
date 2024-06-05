@@ -41,7 +41,10 @@ public class ClientCommandHandler implements Runnable {
                 System.out.println("Message from client: " + messageFromClient);
                 try {
                     JsonObject request = CommandParser.parseCommand(messageFromClient);
-                    System.out.println("Parsed request: " + request.toString()); // Debug statement
+//                    System.out.println("Parsed request: " + request); // Debug statement
+//                    System.out.println("Message from client: " + messageFromClient);
+
+//
                     String commandName = request.get("command").getAsString();
                     Command command = CommandHandler.getCommand(commandName, request);
                     JsonObject response = command.execute(request, world);
